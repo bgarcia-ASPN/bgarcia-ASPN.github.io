@@ -2,8 +2,73 @@ if('serviceWorker' in navigator){
     console.log('Service Worker supported.');
     window.addEventListener('load', function(){
         navigator.serviceWorker
-            .register('../sw_cache_site.js')
-            .then(reg => console.log('Service Worker Registered'))
-            .catch(err => console.log(`ServiceWorker Error ${err}`));
-    });
+            .register('../service-worker.js')
+            // .then(reg => console.log('Service Worker Registered'))
+            .then(function(reg) {
+                console.log('Service Worker Registered')
+                return reg.sync.getTags();
+            }).then(function(tags) { 
+                if (tags.includes('syncTest')) console.log("There's already a background sync pending");
+            })
+            .catch(err => console.log(`Service Worker Error ${err}`));
+        });
+    // navigator.serviceWorker.ready.then(function(swRegistration) {
+    //     return swRegistration.sync.register('myFirstSync');
+    // });
+}
+var _testInterval;
+var timer; 
+var logElem = document.querySelector('#log');
+
+document.addEventListener("DOMContentLoaded", function(event) {
+    stratTimer();
+});
+
+    
+document.querySelector('.register').addEventListener('click', function(event) {
+    event.preventDefault();
+    stratTimer();
+  });
+
+document.querySelector('.stop').addEventListener('click', function(event) {
+    event.preventDefault();
+    if(_testInterval)
+    {
+        clearInterval(_testInterval);   
+        log('Timer stopped');
+    }
+});
+
+
+function sendNotification(){
+    new Promise(function(resolve, reject) {
+        Notification.requestPermission(function(result) {
+          if (result !== 'granted') return reject(Error("Denied notification permission"));
+          resolve();
+        })
+      }).then(function() {
+        return navigator.serviceWorker.ready;
+      }).then(function(reg) {
+        return reg.sync.register('syncTest');
+      }).then(function() {
+        log('Sync event fired.');
+      }).catch(function(err) {
+        console.log('It broke');
+        console.log(err.message);
+      });
+};
+
+function log(msg) {
+    var p = document.createElement('p');
+    p.textContent = msg;
+    logElem.appendChild(p);
+    console.log(msg);
+}
+
+function stratTimer(){
+    timer = parseInt(document.querySelector('#timer').value) * 1000;
+    if(timer != 0 || timer != null){
+        _testInterval = setInterval(sendNotification, timer);
+        log('Timer started');
+    }
 }
