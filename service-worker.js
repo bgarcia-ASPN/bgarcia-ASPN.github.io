@@ -22,10 +22,7 @@ const RUNTIME = 'runtime';
 // A list of local resources we always want to be cached.
 const PRECACHE_URLS = [
   'index.html',
-  './', // Alias for index.html
-  'styles.css',
-  '../../styles/main.css',
-  'demo.js'
+  '/js/main.js'
 ];
 
 // The install handler takes care of precaching the resources we always need.
@@ -74,4 +71,12 @@ self.addEventListener('fetch', event => {
       })
     );
   }
+});
+
+self.addEventListener('sync', function(event) {
+    self.registration.showNotification("Sync event fired!");
+    // event.waitUntil(console.log("BACKGROUND SYNC!"));
+    console.log("BACKGROUND SYNC!");
+    if (event.tag == 'syncTest') {
+    }
 });
