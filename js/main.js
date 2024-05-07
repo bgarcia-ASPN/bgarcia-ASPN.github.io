@@ -17,17 +17,16 @@ if('serviceWorker' in navigator){
     // });
 }
 var _testInterval;
-var timer; 
 var logElem = document.querySelector('#log');
 
 document.addEventListener("DOMContentLoaded", function(event) {
-    stratTimer();
+    startTimer();
 });
 
     
 document.querySelector('.register').addEventListener('click', function(event) {
     event.preventDefault();
-    stratTimer();
+    startTimer();
   });
 
 document.querySelector('.stop').addEventListener('click', function(event) {
@@ -59,14 +58,14 @@ function sendNotification(){
 };
 
 function log(msg) {
-    var p = document.createElement('p');
+    let p = document.createElement('p');
     p.textContent = msg;
     logElem.appendChild(p);
     console.log(msg);
 }
 
-function stratTimer(){
-    timer = parseInt(document.querySelector('#timer').value) * 1000;
+function startTimer(){
+    let timer = parseInt(document.querySelector('#timer').value) * 1000;
     if(timer != 0 || timer != null){
         _testInterval = setInterval(sendNotification, timer);
         log('Timer started');

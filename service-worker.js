@@ -78,5 +78,6 @@ self.addEventListener('sync', function(event) {
     // event.waitUntil(console.log("BACKGROUND SYNC!"));
     console.log("BACKGROUND SYNC!");
     if (event.tag == 'syncTest') {
+      console.log("Log using tags");
     }
 });
