@@ -74,10 +74,38 @@ self.addEventListener('fetch', event => {
 });
 
 self.addEventListener('sync', function(event) {
-    self.registration.showNotification("Sync event fired!");
-    // event.waitUntil(console.log("BACKGROUND SYNC!"));
-    console.log("BACKGROUND SYNC!");
-    if (event.tag == 'syncTest') {
-      console.log("Log using tags");
+    // self.registration.showNotification("Sync event fired!");
+    console.log("Sync event received.");
+
+    if (event.tag == 'startSync') {
+      event.waitUntil(startTimer())   
+    }
+    if (event.tag == 'stopSync') {
+      stopTimer();
     }
 });
+
+/**
+ * //// Functions ////
+ */
+var _testInterval;
+function startTimer(){
+    // let timer = parseInt(document.querySelector('#timer').value) * 1000;
+    let timer = 5000
+    if(timer != 0 || timer != null){
+        _testInterval = setInterval(log("Sync event fired."), timer);
+        console.log('Timer started');
+    }
+}
+
+function stopTimer(){
+  if(_testInterval)
+  {
+      clearInterval(_testInterval);   
+      console.log('Timer stopped');
+  }
+}
+
+function log(msg){
+  console.log(msg);
+}
